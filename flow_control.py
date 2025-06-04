@@ -1,7 +1,7 @@
 from comfy_execution.graph_utils import GraphBuilder, is_link
 from comfy_execution.graph import ExecutionBlocker
 from .tools import VariantSupport
-from .base_node import NODE_PREFIX, FlowNode
+from .base_node import NODE_NAME, FlowNode
 
 NUM_FLOW_SOCKETS = 5
 @VariantSupport()
@@ -162,7 +162,7 @@ FLOW_CONTROL_NODE_CLASS_MAPPINGS = {
 
 # Generate display names with configurable prefix
 FLOW_CONTROL_NODE_DISPLAY_NAME_MAPPINGS = {
-    "WhileLoopOpen": f"{NODE_PREFIX} While Loop Open",
-    "WhileLoopClose": f"{NODE_PREFIX} While Loop Close",
-    "ExecutionBlocker": f"{NODE_PREFIX} Execution Blocker",
+    "WhileLoopOpen": f"While Loop Open | {NODE_NAME}",
+    "WhileLoopClose": f"While Loop Close | {NODE_NAME}",
+    "ExecutionBlocker": f"Execution Blocker | {NODE_NAME}",
 }
