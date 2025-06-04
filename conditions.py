@@ -1,7 +1,7 @@
 import re
 import torch
 from .tools import VariantSupport
-from .base_node import NODE_PREFIX, LogicNode
+from .base_node import NODE_NAME, LogicNode
 
 @VariantSupport()
 class IntConditions(LogicNode):
@@ -183,9 +183,9 @@ CONDITION_NODE_CLASS_MAPPINGS = {
 }
 
 CONDITION_NODE_DISPLAY_NAME_MAPPINGS = {
-    "IntConditions": f"{NODE_PREFIX} Int Condition",
-    "FloatConditions": f"{NODE_PREFIX} Float Condition",
-    "StringConditions": f"{NODE_PREFIX} String Condition",
-    "ToBoolNode": f"{NODE_PREFIX} To Bool",
-    "BoolOperationNode": f"{NODE_PREFIX} Bool Operation",
+    "IntConditions": f"Int Condition | {NODE_NAME}",
+    "FloatConditions": f"Float Condition | {NODE_NAME}",
+    "StringConditions": f"String Condition | {NODE_NAME}",
+    "ToBoolNode": f"To Bool | {NODE_NAME}",
+    "BoolOperationNode": f"Bool Operation | {NODE_NAME}",
 }

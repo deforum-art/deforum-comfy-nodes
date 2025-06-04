@@ -1,26 +1,26 @@
 
-NODE_PREFIX = "Deforum"  # Can be changed to any desired prefix
+NODE_NAME = "Deforum"  # Can be changed to any desired prefix
 
 # Base class for all nodes
 class BaseNode:
-    CATEGORY = NODE_PREFIX
+    CATEGORY = NODE_NAME
     
     @classmethod
     def get_category(cls):
         return cls.CATEGORY
     
 class LogicNode(BaseNode):
-    CATEGORY = f"{NODE_PREFIX}/Logic"
+    CATEGORY = f"{NODE_NAME}/Logic"
     
 class FlowNode(BaseNode):
-    CATEGORY = f"{NODE_PREFIX}/Flow"
+    CATEGORY = f"{NODE_NAME}/Flow"
     
 class UtilityNode(BaseNode):
-    CATEGORY = f"{NODE_PREFIX}/Utility"
+    CATEGORY = f"{NODE_NAME}/Utility"
     
 class DebugNode(BaseNode):
-    CATEGORY = f"{NODE_PREFIX}/Debug"
+    CATEGORY = f"{NODE_NAME}/Debug"
     
 class ListNode(BaseNode):
-    CATEGORY = f"{NODE_PREFIX}/Lists"
+    CATEGORY = f"{NODE_NAME}/Lists"
     

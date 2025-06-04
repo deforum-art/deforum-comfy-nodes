@@ -1,7 +1,7 @@
 from comfy_execution.graph_utils import GraphBuilder
 import torch
 from .tools import VariantSupport
-from .base_node import NODE_PREFIX, ListNode, LogicNode, FlowNode, DebugNode
+from .base_node import NODE_NAME, ListNode, LogicNode, FlowNode, DebugNode
 
 @VariantSupport()
 class AccumulateNode(ListNode):
@@ -377,17 +377,17 @@ UTILITY_NODE_CLASS_MAPPINGS = {
 
 # Generate display names with configurable prefix
 UTILITY_NODE_DISPLAY_NAME_MAPPINGS = {
-    "AccumulateNode": f"{NODE_PREFIX} Accumulate",
-    "AccumulationHeadNode": f"{NODE_PREFIX} Accumulation Head",
-    "AccumulationTailNode": f"{NODE_PREFIX} Accumulation Tail",
-    "AccumulationToListNode": f"{NODE_PREFIX} Accumulation to List",
-    "ListToAccumulationNode": f"{NODE_PREFIX} List to Accumulation",
-    "AccumulationGetLengthNode": f"{NODE_PREFIX} Accumulation Get Length",
-    "AccumulationGetItemNode": f"{NODE_PREFIX} Accumulation Get Item",
-    "AccumulationSetItemNode": f"{NODE_PREFIX} Accumulation Set Item",
-    "ForLoopOpen": f"{NODE_PREFIX} For Loop Open",
-    "ForLoopClose": f"{NODE_PREFIX} For Loop Close",
-    "IntMathOperation": f"{NODE_PREFIX} Int Math Operation",
-    "DebugPrint": f"{NODE_PREFIX} Debug Print",
-    "MakeListNode": f"{NODE_PREFIX} Make List",
+    "AccumulateNode": f"Accumulate | {NODE_NAME}",
+    "AccumulationHeadNode": f"Accumulation Head | {NODE_NAME}",
+    "AccumulationTailNode": f"Accumulation Tail | {NODE_NAME}",
+    "AccumulationToListNode": f"Accumulation to List | {NODE_NAME}",
+    "ListToAccumulationNode": f"List to Accumulation | {NODE_NAME}",
+    "AccumulationGetLengthNode": f"Accumulation Get Length | {NODE_NAME}",
+    "AccumulationGetItemNode": f"Accumulation Get Item | {NODE_NAME}",
+    "AccumulationSetItemNode": f"Accumulation Set Item | {NODE_NAME}",
+    "ForLoopOpen": f"For Loop Open | {NODE_NAME}",
+    "ForLoopClose": f"For Loop Close | {NODE_NAME}",
+    "IntMathOperation": f"Int Math Operation | {NODE_NAME}",
+    "DebugPrint": f"Debug Print | {NODE_NAME}",
+    "MakeListNode": f"Make List | {NODE_NAME}",
 }
