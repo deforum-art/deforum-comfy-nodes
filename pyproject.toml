@@ -1,13 +1,13 @@
 [project]
-name = "deforum-comfy-nodes-new"
+name = "comfyui-deforum"
 description = "Custom nodes for deforum workflows"
 version = "0.1.0"
-license = "MIT"
+license = { file = "LICENSE.txt" }
 
 [project.urls]
 Repository = "https://github.com/deforum-art/deforum-comfy-nodes"
 
 [tool.comfy]
 PublisherId = "deforum"
-DisplayName = "Deforum Nodes (New)"
+DisplayName = "ComfyUI-Deforum"
 Icon = "🏄‍♂️"
