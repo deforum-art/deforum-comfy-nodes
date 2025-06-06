@@ -1,6 +1,4 @@
-import re
 
-from comfy_execution.graph_utils import GraphBuilder
 from .tools import VariantSupport
 from .base_node import NODE_NAME, LogicNode
 
@@ -177,8 +175,8 @@ GENERAL_NODE_CLASS_MAPPINGS = {
 }
 
 GENERAL_NODE_DISPLAY_NAME_MAPPINGS = {
-    "LazySwitch": "Lazy Switch | {NODE_NAME}",
-    "LazyIndexSwitch": "Lazy Index Switch | {NODE_NAME}",
-    "LazyMixImages": "Lazy Mix Images | {NODE_NAME}",
-    "LazyConditional": "Lazy Conditional | {NODE_NAME}",
+    "LazySwitch": f"Lazy Switch | {NODE_NAME}",
+    "LazyIndexSwitch": f"Lazy Index Switch | {NODE_NAME}",
+    "LazyMixImages": f"Lazy Mix Images | {NODE_NAME}",
+    "LazyConditional": f"Lazy Conditional | {NODE_NAME}",
 }
