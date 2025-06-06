@@ -24,3 +24,5 @@ class DebugNode(BaseNode):
 class ListNode(BaseNode):
     CATEGORY = f"{NODE_NAME}/Lists"
     
+class LatentNode(BaseNode):
+    CATEGORY = f"{NODE_NAME}/Latent"
