@@ -1,6 +1,7 @@
 from comfy_execution.graph_utils import GraphBuilder
 import comfy.samplers
 import torch
+import random
 from .tools import VariantSupport
 from .base_node import NODE_NAME, ListNode, LogicNode, FlowNode, DebugNode, UtilityNode
 
@@ -434,7 +435,106 @@ class StringToCombo(UtilityNode):
     
     def string_to_combo(self, string: str):
         return (string.strip().lower(), string, string)
+    
+class GetFloatFromList(UtilityNode):
+    """
+    Get the float from the list at the index.
+    """
+    
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "list": ("FLOAT",),
+                "index": ("INT", {"default": 0, "min": 0, "max": 100000, "step": 1}),
+            },
+        }
+    
+    RETURN_TYPES = ("FLOAT",)
+    FUNCTION = "get_float_from_list"
+    CATEGORY = f"{UtilityNode.CATEGORY}/List"
+    
+    def get_float_from_list(self, list: list, index: int):
+        return (list[index],)
+    
+class GetIntFromList(UtilityNode):
+    """
+    Get the int from the list at the index.
+    """
+    
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "list": ("INT",),
+                "index": ("INT", {"default": 0, "min": 0, "max": 100000, "step": 1}),
+            },
+        }
+    
+    RETURN_TYPES = ("INT",)
+    FUNCTION = "get_int_from_list"
+    CATEGORY = f"{UtilityNode.CATEGORY}/List"
+    
+    def get_int_from_list(self, list: list, index: int):
+        return (list[index],)
+    
+class FloatToInt(LogicNode):
+    """
+    Convert a float to an integer.
+    """
+    
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "float": ("FLOAT",),
+            },
+        }
+    
+    RETURN_TYPES = ("INT",)
+    FUNCTION = "float_to_int"
+    
+    def float_to_int(self, float: float):
+        return (int(float),)
 
+@VariantSupport()
+class SeedListGeneratorNode(ListNode):
+    """
+    Generate a list of seed values based on starting seed and control mode.
+    """
+    
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "start_seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffff, "step": 1}),
+                "num_frames": ("INT", {"default": 5, "min": 1, "max": 10000, "step": 1}),
+                "control_mode": (["increment", "random"],),
+            },
+        }
+    
+    RETURN_TYPES = ("INT",)
+    FUNCTION = "generate_seed_list"
+    # OUTPUT_IS_LIST = (True,)
+    
+    def generate_seed_list(self, start_seed: int, num_frames: int, control_mode: str):
+        seeds = []
+        
+        if control_mode == "increment":
+            for i in range(num_frames):
+                seeds.append(start_seed + i)
+        elif control_mode == "random":
+            # Use start_seed as master seed for deterministic random generation
+            random.seed(start_seed)
+            for i in range(num_frames):
+                if i == 0:
+                    # First seed is always the start seed
+                    seeds.append(start_seed)
+                else:
+                    # Generate random seeds using the master seed
+                    seeds.append(random.randint(0, 0xffffffff))
+        
+        return (seeds,)
 
 # Configuration for node display names
 
@@ -454,7 +554,11 @@ UTILITY_NODE_CLASS_MAPPINGS = {
     "MakeListNode": MakeListNode,
     "SamplerSelector": SamplerSelector,
     "SchedulerSelector": SchedulerSelector,
-    "StringToCombo": StringToCombo,
+    "StringToCombo": StringToCombo, 
+    "GetFloatFromList": GetFloatFromList,
+    "FloatToInt": FloatToInt,
+    "GetIntFromList": GetIntFromList,
+    "SeedListGeneratorNode": SeedListGeneratorNode,
 }
 
 # Generate display names with configurable prefix
@@ -475,4 +579,8 @@ UTILITY_NODE_DISPLAY_NAME_MAPPINGS = {
     "SamplerSelector": f"Sampler Selector | {NODE_NAME}",
     "SchedulerSelector": f"Scheduler Selector | {NODE_NAME}",
     "StringToCombo": f"String to Combo | {NODE_NAME}",
+    "GetFloatFromList": f"Get Float From List | {NODE_NAME}",
+    "FloatToInt": f"Float to Int | {NODE_NAME}",
+    "GetIntFromList": f"Get Int From List | {NODE_NAME}",
+    "SeedListGeneratorNode": f"Seed List Generator | {NODE_NAME}",
 }
