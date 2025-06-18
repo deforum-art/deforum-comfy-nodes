@@ -1,24 +1,8 @@
-# import re
-# import torch
-# from .tools import VariantSupport
-# from .base_node import NODE_NAME, LatentNode
-# import comfy.model_management
-
-
-
-# LATENT_NODE_CLASS_MAPPINGS = {
-#     "SeedInterpNoise": SeedInterpNoise,
-# }
-
-# LATENT_NODE_DISPLAY_NAME_MAPPINGS = {
-#     "SeedInterpNoise": f"Seed Interp Noise | {NODE_NAME}",
-# }
-
 import torch
 import comfy.samplers
 import comfy.model_management
 from .tools import VariantSupport
-from .base_node import NODE_NAME, LatentNode
+from .base_node import LatentNode, NODE_POSTFIX
 
 # -----------------------------------------------------------------------------
 #  Helper: SLERP, LERP, NLERP between tensors
@@ -147,63 +131,6 @@ class SeedInterpNoise(LatentNode):
 
         return ({"samples": batch.cpu()}, )
 
-
-# @VariantSupport()
-# class SeedInterpNoise(LatentNode):
-#     """Generate a batch of ε‑noise tensors that morph smoothly across seeds.
-
-#     Use the *frames* output as the noise input for **PrepareLatentDenoise**.
-#     """
-
-#     @classmethod
-#     def INPUT_TYPES(cls):
-#         return {
-#             "required": {
-#                 "device": (["CPU", "GPU"],),
-#                 "start_seed": ("INT", {"default": 0, "min": 0, "max": 2 ** 63 - 1}),
-#                 "frames": ("INT", {"default": 8, "min": 1, "max": 1_000_000}),
-#                 "interp_steps": ("INT", {"default": 1, "min": 0, "max": 1024}),
-#                 "width": ("INT", {"default": 512, "min": 8, "max": 32_768, "step": 8}),
-#                 "height": ("INT", {"default": 512, "min": 8, "max": 32_768, "step": 8}),
-#                 "method": (list(_INTERP_FUNCS.keys()),),
-#             }
-#         }
-
-#     RETURN_TYPES = ("LATENT",)
-#     FUNCTION = "build"
-
-#     # ------------------------------------------------------------ core logic --
-#     def build(self, device, start_seed, frames, interp_steps, width, height, method):
-#         device = "cpu" if device == "CPU" else comfy.model_management.get_torch_device()
-#         c, h, w = 4, height // 8, width // 8
-#         out = torch.empty((frames, c, h, w), dtype=torch.float32, device=device)
-
-#         def eps(seed: int):
-#             g = torch.Generator(device=device).manual_seed(seed)
-#             return torch.randn((c, h, w), generator=g, device=device)
-
-#         interp_fn = _INTERP_FUNCS[method]
-#         seg_len = interp_steps + 1
-#         cur_seed, idx = start_seed, 0
-
-#         while idx < frames:
-#             a = eps(cur_seed)
-#             b = eps(cur_seed + 1)
-#             out[idx] = a; idx += 1
-#             for k in range(1, seg_len):
-#                 if idx >= frames:
-#                     break
-#                 t = k / seg_len
-#                 out[idx] = interp_fn(t, a, b)
-#                 idx += 1
-#             cur_seed += 1
-
-#         return ({"samples": out.cpu()},)
-
-# -----------------------------------------------------------------------------
-#  Node 2: Prepare Latent + Sigma list for img2img at given denoise
-# -----------------------------------------------------------------------------
-
 _VALID_SAMPLERS = comfy.samplers.KSampler.SAMPLERS
 _VALID_SCHEDULERS = comfy.samplers.KSampler.SCHEDULERS
 
@@ -288,6 +215,6 @@ LATENT_NODE_CLASS_MAPPINGS = {
 }
 
 LATENT_NODE_DISPLAY_NAME_MAPPINGS = {
-    "SeedInterpNoise": f"Seed Interp Noise | {NODE_NAME}",
-    "PrepareLatentDenoise": f"Prepare Latent Denoise | {NODE_NAME}",
+    "SeedInterpNoise": f"Seed Interp Noise {NODE_POSTFIX}",
+    "PrepareLatentDenoise": f"Prepare Latent Denoise {NODE_POSTFIX}",
 }

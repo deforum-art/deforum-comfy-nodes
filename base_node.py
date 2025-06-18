@@ -1,5 +1,6 @@
-
 NODE_NAME = "Deforum"  # Can be changed to any desired prefix
+
+NODE_POSTFIX = "| Deforum"
 
 # Base class for all nodes
 class BaseNode:
