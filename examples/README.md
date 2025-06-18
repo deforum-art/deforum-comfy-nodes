@@ -4,6 +4,8 @@
 
 This is a complex workflow that makes use of Execution Inversion loops (for loops) and Flux Dev to iteratively transform and generate deforum-style animations.
 
+![deforum_flux_complex_overview](https://github.com/user-attachments/assets/9dd6fe88-8dcb-448d-a899-f1250ec63ec9)
+
 #### Models needed:
 
 [flux-dev-fp8.safetensors](https://huggingface.co/Comfy-Org/flux1-dev/blob/main/flux1-dev-fp8.safetensors)
