@@ -1,8 +1,7 @@
 # Deforum Flux Complex Workflow
 
-![image.png](attachment:42b6654e-741b-48ae-9bbd-3eabc3ddc952:image.png)
+![wf_overview](https://github.com/user-attachments/assets/725d4351-2c39-42e6-8ac3-f9dd8216b1ac)
 
----
 
 ## Credits:
 
@@ -10,7 +9,6 @@
 
 [Akatz:](https://akatz.ai/) Workflow builder and founder of [ComfyDock](https://comfydock.com/)
 
----
 
 ## Step 1. Download models
 
@@ -26,11 +24,10 @@ Optional (but recommended):
 
 [Flux.1-Turbo-Alpha](https://huggingface.co/alimama-creative/FLUX.1-Turbo-Alpha/tree/main)
 
----
 
 ## Step 2. Configure Inputs
 
-![image.png](attachment:08179661-99fe-44a6-a5f8-01330618a7dc:image.png)
+![inputs](https://github.com/user-attachments/assets/87e51941-747c-4803-9bb1-fd03b99c7c52)
 
 **Seed**: The initial seed used in generating
 
@@ -50,21 +47,19 @@ Optional (but recommended):
 
 **Use Upload Image?:** A switch that if set to TRUE will use the uploaded image as the initial frame in the generation sequence, and if FALSE will generate a random starting frame based on the prompt and seed.
 
----
 
 ## Step 3. Configure Prompt Schedules
 
-![image.png](attachment:a1ea8b7d-418b-4c63-9459-b63be7e7d228:image.png)
+![prompt_schedules](https://github.com/user-attachments/assets/d7c570fb-685d-4a52-9512-92fba22376c6)
 
 The "Schedules" group has a Prompt Schedule node which will let you configure the prompt (or sequence of prompts) using frame indices for the duration of the animation sequence.
 
 These Schedule nodes are part of [FizzNodes](https://github.com/FizzleDorf/ComfyUI_FizzNodes) and the string format follows the [documentation from the same github repo](https://github.com/FizzleDorf/ComfyUI_FizzNodes/wiki/Prompt-Schedules)
 
----
 
 ## Step 4. Configure 2D Motion
 
-![image.png](attachment:77298fa0-c146-491b-80b3-72274300f20e:image.png)
+![2d_motion](https://github.com/user-attachments/assets/0ba788b6-462b-41e4-9a9a-e08d5f5e9b8b)
 
 You can modify the values in the **Transform Image** group above to create dramatic effects in the animation, such as infinite zoom or horizontal and vertical traveling.
 
@@ -72,11 +67,10 @@ Edit the **Scale** float value to influence zoom speed.
 
 Edit the **X and Y** float values to influence horizontal and vertical movement speed respectively.
 
----
 
 ## Step 5. (Optional) Enable and Configure Value Schedules
 
-![image.png](attachment:09740b4d-dd8f-4681-9c39-cc8d4ff7ae4b:image.png)
+![value_schedules](https://github.com/user-attachments/assets/8f73bbc7-253c-487b-94c8-d76bad0a00a8)
 
 The bypassed groups below the Input and Schedules groups can be used to vary the Denoise, Step count, Seed value, and CFG values over the duration of the animation.
 
@@ -84,7 +78,6 @@ Each group has a "Fast Bypasser" node which you can click on to un-bypass the gr
 
 Each Schedule group has a Value Schedule node (part of FizzNodes) which can be used to change values over time based on a frame index and number.
 
----
 
 ## Step 6. RUN the workflow
 
@@ -92,19 +85,15 @@ Your final generation result will be visible in the Outputs group below:
 
 You can change the frame_rate and filename_prefix as desired.
 
-![image.png](attachment:fe91c10d-b2b3-44da-9c0d-1ac215cd4c5f:image.png)
-
----
+![outputs](https://github.com/user-attachments/assets/a0697562-65ee-4cc6-8ede-dae532a213d2)
 
 ## Step 7. Profit
-
----
 
 ## Extras:
 
 ### Sampling:
 
-![image.png](attachment:e0e40c3a-df0d-4f94-a229-d30d92d46d34:image.png)
+![sampling](https://github.com/user-attachments/assets/1e576d0d-9941-49b2-903d-4788af44727d)
 
 This is the group where the FLUX sampler lives. Inputs to the group can be seen on the left as an array of GET nodes, and outputs can be seen on the right as SET nodes.
 
@@ -112,7 +101,7 @@ Generally the “final” values are fed into the sampler, and are set in the �
 
 ### Generated Seed List:
 
-![image.png](attachment:ab30fed1-2e06-48c1-a821-fb6c011a6020:image.png)
+![generated_seed_list](https://github.com/user-attachments/assets/7f7f2fbb-24ae-4506-a084-16c082b164ab)
 
 This group is where this list of seeds for generating noise each frame will be generated.
 
@@ -120,7 +109,7 @@ You can change the “control_mode” to **random** instead of **increment** to 
 
 ### Open Loop:
 
-![image.png](attachment:a092d0cf-231d-4521-8450-57c6a654b1df:image.png)
+![open_loop](https://github.com/user-attachments/assets/32dfdcdb-7f88-4244-8724-ce743ee3bc6a)
 
 This is the group containing the opening For Loop node, and is responsible for providing the current loop index, a boolean if the current frame is the “start” index (first frame), and additional values passed via the “values” slots 1-4. 
 
@@ -128,30 +117,28 @@ These values exactly correspond to the For Loop Close group’s value slots 1-4.
 
 ### Close Loop:
 
-![image.png](attachment:e5483db0-b7f5-4444-84d4-5ab4c51af091:image.png)
+![close_loop](https://github.com/user-attachments/assets/8476824f-3a1e-4f24-8187-1a216e4d50d2)
 
 Then end point of the For Loop for each iteration. Values passed to “initial_values” 1-4 will be present in the next iteration in For Loop Open’s values 1-4.
 Once the loop is complete, any remaining values in the “initial_values” slots will pass to the output value slots, and execution will continue.
-
----
 
 ## Utility Groups:
 
 ### Fast Groups Bypasser:
 
-![image.png](attachment:8a2c71a2-e700-42cb-9acb-8b5efdd6b40e:image.png)
+![fast_groups_bypasser](https://github.com/user-attachments/assets/46e5c852-7500-42b6-a41e-e414c719e3bd)
 
 Use the Fast Groups Bypasser node to selectively bypass groups remotely
 
 ### Initial Denoise
 
-![image.png](attachment:fbf78f95-7fd7-4af7-8a9f-62fa5bd0d466:image.png)
+![init_denoise](https://github.com/user-attachments/assets/067860f0-5823-4672-80ea-eacc8525c070)
 
 This utility group will set the initial denoise value to 1.0 (regardless of the default denoise or denoise schedule values) if an upload image is NOT used. This is to ensure the first frame is of high quality for subsequent generation frames.
 
 ### Util Switches
 
-![image.png](attachment:14169519-647c-4530-889b-3bc71827d53c:image.png)
+![util_switches](https://github.com/user-attachments/assets/b8252ca1-4146-4472-8495-d667c52843c3)
 
 The set of switches in the Utils group above are used as a buffer between nodes and groups that transform values (like seed values, latent values, conditioning, etc.) and the final connection to the Sampling group. This is useful if you want to be able to bypass group nodes, and have “fallback” values in place (i.e. use a default seed value if we mute the seed scheduler group instead of crashing)
 
