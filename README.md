@@ -2,6 +2,11 @@
 
 Native Deforum implementation for ComfyUI - Bringing powerful animation capabilities to your ComfyUI workflows.
 
+## Workflows
+
+- [Deforum + Flux Complex](https://github.com/deforum-art/deforum-comfy-nodes/tree/main/examples/deforum_flux_complex) - Flux implementation with setup guide
+- More workflows coming soon
+
 ## Acknowledgments
 
 This project builds upon the incredible work of:
