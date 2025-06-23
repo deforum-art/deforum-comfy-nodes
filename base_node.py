@@ -27,3 +27,6 @@ class ListNode(BaseNode):
     
 class LatentNode(BaseNode):
     CATEGORY = f"{NODE_NAME}/Latent"
+    
+class ImageNode(BaseNode):
+    CATEGORY = f"{NODE_NAME}/Image"
