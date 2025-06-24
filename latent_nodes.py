@@ -210,11 +210,11 @@ class PrepareLatentDenoise(LatentNode):
 #  Registration tables
 # -----------------------------------------------------------------------------
 LATENT_NODE_CLASS_MAPPINGS = {
-    "SeedInterpNoise": SeedInterpNoise,
-    "PrepareLatentDenoise": PrepareLatentDenoise,
+    f"SeedInterpNoise{NODE_POSTFIX}": SeedInterpNoise,
+    f"PrepareLatentDenoise{NODE_POSTFIX}": PrepareLatentDenoise,
 }
 
 LATENT_NODE_DISPLAY_NAME_MAPPINGS = {
-    "SeedInterpNoise": f"Seed Interp Noise {NODE_POSTFIX}",
-    "PrepareLatentDenoise": f"Prepare Latent Denoise {NODE_POSTFIX}",
+    f"SeedInterpNoise{NODE_POSTFIX}": f"Seed Interp Noise {NODE_POSTFIX}",
+    f"PrepareLatentDenoise{NODE_POSTFIX}": f"Prepare Latent Denoise {NODE_POSTFIX}",
 }

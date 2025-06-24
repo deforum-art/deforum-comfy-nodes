@@ -2,8 +2,17 @@ import torch
 import cv2
 import numpy as np
 from PIL import Image, ImageFilter
+from PIL.PngImagePlugin import PngInfo
 from .tools import VariantSupport
 from .base_node import ImageNode, NODE_POSTFIX
+import os
+import json
+import time
+import random
+import folder_paths
+import comfy.utils
+from comfy.cli_args import args
+from nodes import SaveImage
 
 def tensor_to_pil(tensor):
     """Convert ComfyUI image tensor to PIL Image."""
@@ -256,18 +265,128 @@ class ColorCorrectionAndSharpening(ImageNode):
             )[0]
         
         return (processed_image,)
+    
+    
+class SmartLoopPreviewImage(ImageNode, SaveImage):
+    """
+    Advanced version that maintains a sliding window of recent iterations
+    to prevent unlimited accumulation while still showing iteration progress
+    """
+    
+    # Class variable to track iteration counts per node
+    _iteration_counters = {}
+    
+    def __init__(self):
+        self.output_dir = folder_paths.get_temp_directory()
+        self.type = "temp"
+        self.compress_level = 1
+        
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "images": ("IMAGE", ),
+            },
+            "hidden": {
+                "prompt": "PROMPT", 
+                "extra_pnginfo": "EXTRA_PNGINFO",
+                "unique_id": "UNIQUE_ID",
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("images",)
+    FUNCTION = "smart_preview_images"
+    OUTPUT_NODE = True
+
+    def smart_preview_images(self, images, filename_prefix="ComfyUI", prompt=None, extra_pnginfo=None, unique_id=None):
+        
+        # Track iteration count for this node instance
+        if unique_id not in self._iteration_counters:
+            self._iteration_counters[unique_id] = 0
+        
+        iteration_num = self._iteration_counters[unique_id]
+        self._iteration_counters[unique_id] += 1
+        
+        # Generate filename with iteration number
+        timestamp = int(time.time() * 1000)
+        prefix_append = f"_iter{iteration_num:03d}_{timestamp}"
+        filename_prefix += prefix_append
+
+        # Save images for this iteration
+        results = []
+        for (batch_number, image) in enumerate(images):
+            i = 255. * image.cpu().numpy()
+            img = Image.fromarray(np.clip(i, 0, 255).astype(np.uint8))
+            
+            # Add iteration info to metadata if enabled
+            metadata = None
+            if not args.disable_metadata:
+                metadata = PngInfo()
+                if prompt is not None:
+                    metadata.add_text("prompt", json.dumps(prompt))
+                if extra_pnginfo is not None:
+                    for x in extra_pnginfo:
+                        metadata.add_text(x, json.dumps(extra_pnginfo[x]))
+                        
+                metadata.add_text("loop_iteration", str(iteration_num))
+
+            filename_with_batch_num = filename_prefix.replace("%batch_num%", str(batch_number))
+            file = f"{filename_with_batch_num}_{batch_number:05}_.png"
+            img.save(os.path.join(self.output_dir, file), pnginfo=metadata, compress_level=self.compress_level)
+            
+            results.append({
+                "filename": file,
+                "subfolder": "",
+                "type": self.type,
+                "iteration": iteration_num  # Custom field for frontend use
+            })
+
+        # Clean up old files if we exceed 1
+        self._cleanup_old_previews(unique_id, 1)
+
+        # Determine merge strategy
+        merge_results = iteration_num > 0  # Merge after first iteration
+        
+        return {
+            "ui": {
+                "images": results
+            },
+            "result": (images,),
+            "merge": merge_results,
+        }
+    
+    def _cleanup_old_previews(self, unique_id, max_previews):
+        """Clean up old preview files to prevent disk space issues"""
+        current_iteration = self._iteration_counters[unique_id] - 1
+        if current_iteration >= max_previews:
+            # Remove files from iterations that are too old
+            iterations_to_remove = range(current_iteration - max_previews, current_iteration - max_previews + 1)
+            for old_iter in iterations_to_remove:
+                if old_iter >= 0:
+                    # Find and remove files from this iteration
+                    pattern = f"*_iter{old_iter:03d}_*"
+                    import glob
+                    old_files = glob.glob(os.path.join(self.output_dir, pattern))
+                    for old_file in old_files:
+                        try:
+                            os.remove(old_file)
+                        except OSError:
+                            pass  # File already removed or doesn't exist
 
 # -----------------------------------------------------------------------------
 #  Registration tables
 # -----------------------------------------------------------------------------
 IMAGE_NODE_CLASS_MAPPINGS = {
-    "ColorCorrection": ColorCorrection,
-    "AdaptiveSharpening": AdaptiveSharpening,
-    "ColorCorrectionAndSharpening": ColorCorrectionAndSharpening,
+    f"ColorCorrection{NODE_POSTFIX}": ColorCorrection,
+    f"AdaptiveSharpening{NODE_POSTFIX}": AdaptiveSharpening,
+    f"ColorCorrectionAndSharpening{NODE_POSTFIX}": ColorCorrectionAndSharpening,
+    f"SmartLoopPreviewImage{NODE_POSTFIX}": SmartLoopPreviewImage
 }
 
 IMAGE_NODE_DISPLAY_NAME_MAPPINGS = {
-    "ColorCorrection": f"Color Correction {NODE_POSTFIX}",
-    "AdaptiveSharpening": f"Adaptive Sharpening {NODE_POSTFIX}",
-    "ColorCorrectionAndSharpening": f"Color Correction + Sharpening {NODE_POSTFIX}",
+    f"ColorCorrection{NODE_POSTFIX}": f"Color Correction {NODE_POSTFIX}",
+    f"AdaptiveSharpening{NODE_POSTFIX}": f"Adaptive Sharpening {NODE_POSTFIX}",
+    f"ColorCorrectionAndSharpening{NODE_POSTFIX}": f"Color Correction + Sharpening {NODE_POSTFIX}",
+    f"SmartLoopPreviewImage{NODE_POSTFIX}": f"Smart Loop Preview Image {NODE_POSTFIX}"
 } 
