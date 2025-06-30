@@ -206,7 +206,7 @@ class ForLoopOpen(FlowNode):
         graph = GraphBuilder()
         if "initial_value0" in kwargs:
             remaining = kwargs["initial_value0"]
-        while_open = graph.node("WhileLoopOpen", condition=remaining, initial_value0=remaining, **{("initial_value%d" % i): kwargs.get("initial_value%d" % i, None) for i in range(1, NUM_FLOW_SOCKETS)})
+        while_open = graph.node(f"WhileLoopOpen{NODE_POSTFIX}", condition=remaining, initial_value0=remaining, **{("initial_value%d" % i): kwargs.get("initial_value%d" % i, None) for i in range(1, NUM_FLOW_SOCKETS)})
         outputs = [kwargs.get("initial_value%d" % i, None) for i in range(1, NUM_FLOW_SOCKETS)]
         return {
             "result": tuple(["stub", remaining] + outputs),
@@ -239,10 +239,10 @@ class ForLoopClose(FlowNode):
         while_open = flow_control[0]
         
         # Use our internal counter node instead of external dependencies
-        counter = graph.node("_ForLoopCounter", current_value=[while_open, 1])
+        counter = graph.node(f"_ForLoopCounter{NODE_POSTFIX}", current_value=[while_open, 1])
         
         input_values = {("initial_value%d" % i): kwargs.get("initial_value%d" % i, None) for i in range(1, NUM_FLOW_SOCKETS)}
-        while_close = graph.node("WhileLoopClose",
+        while_close = graph.node(f"WhileLoopClose{NODE_POSTFIX}",
                 flow_control=flow_control,
                 condition=counter.out(1),  # should_continue output
                 initial_value0=counter.out(0),  # decremented output
